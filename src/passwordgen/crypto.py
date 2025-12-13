@@ -87,6 +87,9 @@ class SecureHasher:
         - rounds=12: ~250ms on modern CPU
         - rounds=14: ~1s on modern CPU
         
+        Note: bcrypt has a maximum password length of 72 bytes.
+        Longer passwords are automatically truncated.
+        
         Args:
             password: Password to hash
             rounds: Cost factor (4-31, default: 12)
@@ -102,8 +105,8 @@ class SecureHasher:
         if not (4 <= rounds <= 31):
             raise ValueError("bcrypt rounds must be between 4 and 31")
 
-        # bcrypt requires bytes input
-        password_bytes = password.encode("utf-8")
+        # bcrypt requires bytes input and has 72-byte limit
+        password_bytes = password.encode("utf-8")[:72]
 
         # Hash with bcrypt (includes random salt generation)
         hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt(rounds=rounds))
@@ -207,7 +210,8 @@ class SecureHasher:
             return False
 
         try:
-            password_bytes = password.encode("utf-8")
+            # bcrypt has 72-byte password limit
+            password_bytes = password.encode("utf-8")[:72]
             hash_bytes = hash_str.encode("utf-8")
             # bcrypt.checkpw uses constant-time comparison
             return bcrypt.checkpw(password_bytes, hash_bytes)
