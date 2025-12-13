@@ -117,6 +117,14 @@ This project is built with security as the primary concern:
 git clone https://github.com/Kagias/secure-password-generator.git
 cd secure-password-generator
 
+# IMPORTANT: Install the real EFF wordlist for production use
+# The included wordlist is a placeholder for development only
+curl -o wordlists/temp.txt https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
+cut -f2 wordlists/temp.txt > wordlists/eff_large_wordlist.txt
+rm wordlists/temp.txt
+
+# Or see wordlists/README.md for alternative installation methods
+
 # Install with pip (editable mode)
 pip install -e .
 
