@@ -21,13 +21,13 @@ from passwordgen.crypto import SecureHasher
 class SecureVault:
     """
     Encrypted password vault using Fernet symmetric encryption.
-    
+
     Security features:
     - Master password protected with Argon2id key derivation
     - Fernet encryption (AES-128-CBC + HMAC-SHA256) for authenticated encryption
     - Random salt for each vault
     - JSON-based storage with metadata
-    
+
     Fernet properties:
     - Symmetric encryption (AES in CBC mode with 128-bit keys)
     - Authentication via HMAC-SHA256 (prevents tampering)
@@ -40,11 +40,11 @@ class SecureVault:
     def __init__(self, vault_path: Path, master_password: str):
         """
         Initialize or open an encrypted vault.
-        
+
         Args:
             vault_path: Path to vault file
             master_password: Master password for vault encryption
-            
+
         Raises:
             ValueError: If master password is empty
             PermissionError: If vault file cannot be accessed
@@ -64,15 +64,15 @@ class SecureVault:
     def _derive_key(self, password: str, salt: bytes) -> bytes:
         """
         Derive encryption key from password using PBKDF2-HMAC-SHA256.
-        
+
         PBKDF2 is used here (instead of Argon2) because it's well-suited for
         key derivation and is available in cryptography library without
         additional dependencies.
-        
+
         Args:
             password: Master password
             salt: Salt bytes (16+ bytes recommended)
-            
+
         Returns:
             32-byte key suitable for Fernet
         """
@@ -139,15 +139,17 @@ class SecureVault:
 
         return base64.urlsafe_b64encode(key)
 
-    def add_entry(self, name: str, password: str, metadata: Optional[dict[str, Any]] = None) -> None:
+    def add_entry(
+        self, name: str, password: str, metadata: Optional[dict[str, Any]] = None
+    ) -> None:
         """
         Add a password entry to the vault.
-        
+
         Args:
             name: Entry name (must be unique)
             password: Password to store
             metadata: Optional metadata dictionary
-            
+
         Raises:
             ValueError: If name is empty or already exists
         """
@@ -172,25 +174,25 @@ class SecureVault:
     def get_entry(self, name: str) -> dict[str, Any]:
         """
         Retrieve a password entry from the vault.
-        
+
         Args:
             name: Entry name
-            
+
         Returns:
             Entry dictionary with password and metadata
-            
+
         Raises:
             KeyError: If entry not found
         """
         if name not in self.vault_data["entries"]:
             raise KeyError(f"Entry '{name}' not found")
 
-        return self.vault_data["entries"][name].copy()
+        return dict(self.vault_data["entries"][name])
 
     def list_entries(self) -> list[str]:
         """
         List all entry names in the vault.
-        
+
         Returns:
             Sorted list of entry names
         """
@@ -199,10 +201,10 @@ class SecureVault:
     def delete_entry(self, name: str) -> None:
         """
         Delete a password entry from the vault.
-        
+
         Args:
             name: Entry name
-            
+
         Raises:
             KeyError: If entry not found
         """
@@ -215,12 +217,12 @@ class SecureVault:
     def change_master_password(self, new_password: str) -> None:
         """
         Change the vault's master password.
-        
+
         Re-encrypts the entire vault with a new key derived from the new password.
-        
+
         Args:
             new_password: New master password
-            
+
         Raises:
             ValueError: If new password is empty
         """
@@ -239,9 +241,9 @@ class SecureVault:
     def export_encrypted(self, output_path: Path) -> None:
         """
         Export the encrypted vault to another location.
-        
+
         Creates a copy of the encrypted vault file.
-        
+
         Args:
             output_path: Destination path for exported vault
         """

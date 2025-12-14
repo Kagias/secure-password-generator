@@ -13,7 +13,7 @@ from typing import Any
 class SensitiveDataFilter(logging.Filter):
     """
     Logging filter that redacts sensitive data from log messages.
-    
+
     Patterns detected and redacted:
     - Password-like strings
     - API keys and tokens
@@ -28,29 +28,28 @@ class SensitiveDataFilter(logging.Filter):
         (re.compile(r'password["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "password=***REDACTED***"),
         (re.compile(r'passwd["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "passwd=***REDACTED***"),
         (re.compile(r'pwd["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "pwd=***REDACTED***"),
-        
         # API keys and tokens
-        (re.compile(r'api[_-]?key["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "api_key=***REDACTED***"),
+        (
+            re.compile(r'api[_-]?key["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE),
+            "api_key=***REDACTED***",
+        ),
         (re.compile(r'token["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "token=***REDACTED***"),
         (re.compile(r'secret["\s]*[:=]["\s]*[^\s"]+', re.IGNORECASE), "secret=***REDACTED***"),
-        
         # Long hex strings (potential hashes)
-        (re.compile(r'\b[a-fA-F0-9]{32,}\b'), "***HASH_REDACTED***"),
-        
+        (re.compile(r"\b[a-fA-F0-9]{32,}\b"), "***HASH_REDACTED***"),
         # Long base64 strings (potential keys/tokens)
-        (re.compile(r'\b[A-Za-z0-9+/]{40,}={0,2}\b'), "***TOKEN_REDACTED***"),
-        
+        (re.compile(r"\b[A-Za-z0-9+/]{40,}={0,2}\b"), "***TOKEN_REDACTED***"),
         # Credit card numbers (simple pattern)
-        (re.compile(r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'), "***CARD_REDACTED***"),
+        (re.compile(r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b"), "***CARD_REDACTED***"),
     ]
 
     def filter(self, record: logging.LogRecord) -> bool:
         """
         Filter log record and redact sensitive data.
-        
+
         Args:
             record: Log record to filter
-            
+
         Returns:
             True (always allow record, but with redacted data)
         """
@@ -77,7 +76,7 @@ class SensitiveDataFilter(logging.Filter):
 class SecureLogger:
     """
     Secure logger that prevents sensitive data leakage.
-    
+
     Usage:
         logger = SecureLogger.get_logger("my_module")
         logger.info("User logged in")  # Safe
@@ -90,11 +89,11 @@ class SecureLogger:
     def get_logger(cls, name: str, level: int = logging.INFO) -> logging.Logger:
         """
         Get or create a secure logger instance.
-        
+
         Args:
             name: Logger name
             level: Logging level (default: INFO)
-            
+
         Returns:
             Configured logger with sensitive data filtering
         """
@@ -133,12 +132,12 @@ class SecureLogger:
     def redact_sensitive_data(data: Any) -> Any:
         """
         Manually redact sensitive data from any object.
-        
+
         Useful for sanitizing data before logging or display.
-        
+
         Args:
             data: Data to redact (string, dict, list, etc.)
-            
+
         Returns:
             Data with sensitive information redacted
         """

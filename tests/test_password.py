@@ -59,7 +59,9 @@ class TestPasswordGenerator:
     def test_custom_symbols(self) -> None:
         """Test custom symbol set."""
         custom = "!@#$"
-        gen = PasswordGenerator(uppercase=False, lowercase=False, digits=False, custom_symbols=custom)
+        gen = PasswordGenerator(
+            uppercase=False, lowercase=False, digits=False, custom_symbols=custom
+        )
         password = gen.generate()
         assert all(c in custom for c in password)
 

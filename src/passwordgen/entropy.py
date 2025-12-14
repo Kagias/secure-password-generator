@@ -13,23 +13,23 @@ from typing import Set
 def calculate_password_entropy(password: str) -> float:
     """
     Calculate the entropy of a password based on its character composition.
-    
+
     This function determines which character classes are present in the password
     and calculates entropy based on the formula:
         entropy = length * log2(charset_size)
-    
+
     Character classes detected:
     - Lowercase letters (a-z): 26 chars
     - Uppercase letters (A-Z): 26 chars
     - Digits (0-9): 10 chars
     - Symbols/punctuation: 32 chars
-    
+
     Args:
         password: The password to analyze
-        
+
     Returns:
         Entropy in bits
-        
+
     Note:
         This is an estimate based on character composition. It doesn't account
         for patterns, dictionary words, or predictability.
@@ -71,21 +71,21 @@ def calculate_password_entropy(password: str) -> float:
 def calculate_passphrase_entropy(word_count: int, wordlist_size: int) -> float:
     """
     Calculate the entropy of a Diceware-style passphrase.
-    
+
     For passphrases composed of randomly selected words from a wordlist,
     the entropy formula is:
         entropy = word_count * log2(wordlist_size)
-    
+
     For the EFF large wordlist (7776 words):
         entropy = word_count * log2(7776) ≈ word_count * 12.925 bits
-    
+
     Args:
         word_count: Number of words in the passphrase
         wordlist_size: Size of the wordlist used
-        
+
     Returns:
         Entropy in bits
-        
+
     Raises:
         ValueError: If word_count or wordlist_size < 1
     """
@@ -100,17 +100,17 @@ def calculate_passphrase_entropy(word_count: int, wordlist_size: int) -> float:
 def entropy_to_strength(entropy_bits: float) -> str:
     """
     Convert entropy bits to a human-readable strength rating.
-    
+
     Strength classifications based on NIST guidelines:
     - < 28 bits: Very Weak (seconds to crack)
     - 28-35 bits: Weak (minutes to hours)
     - 36-59 bits: Fair (days to months)
     - 60-127 bits: Strong (years to centuries)
     - >= 128 bits: Very Strong (impractical to crack)
-    
+
     Args:
         entropy_bits: Entropy in bits
-        
+
     Returns:
         Strength rating: "Very Weak", "Weak", "Fair", "Strong", or "Very Strong"
     """
@@ -129,20 +129,20 @@ def entropy_to_strength(entropy_bits: float) -> str:
 def estimate_crack_time(entropy_bits: float, guesses_per_second: float = 1e12) -> str:
     """
     Estimate the time to crack a password given its entropy.
-    
+
     Calculation:
         total_combinations = 2^entropy_bits
         time_seconds = total_combinations / (2 * guesses_per_second)
-        
+
     We divide by 2 for average case (password found at 50% search).
-    
+
     Default assumption: 1 trillion (1e12) guesses per second
     This represents high-end GPU cluster attacks.
-    
+
     Args:
         entropy_bits: Entropy in bits
         guesses_per_second: Attack speed in guesses/second
-        
+
     Returns:
         Human-readable time estimate (e.g., "3.2 years", "centuries")
     """

@@ -13,7 +13,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_argon2(password)
-        
+
         assert hash_str is not None
         assert isinstance(hash_str, str)
         assert hash_str.startswith("$argon2")
@@ -24,7 +24,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_bcrypt(password)
-        
+
         assert hash_str is not None
         assert isinstance(hash_str, str)
         assert hash_str.startswith("$2")
@@ -35,7 +35,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_scrypt(password)
-        
+
         assert hash_str is not None
         assert isinstance(hash_str, str)
         assert "$" in hash_str
@@ -47,7 +47,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_argon2(password)
-        
+
         assert hasher.verify_argon2(password, hash_str) is True
 
     def test_verify_argon2_incorrect(self) -> None:
@@ -55,7 +55,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_argon2(password)
-        
+
         assert hasher.verify_argon2("wrong_password", hash_str) is False
 
     def test_verify_bcrypt_correct(self) -> None:
@@ -63,7 +63,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_bcrypt(password)
-        
+
         assert hasher.verify_bcrypt(password, hash_str) is True
 
     def test_verify_bcrypt_incorrect(self) -> None:
@@ -71,7 +71,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_bcrypt(password)
-        
+
         assert hasher.verify_bcrypt("wrong_password", hash_str) is False
 
     def test_verify_scrypt_correct(self) -> None:
@@ -79,7 +79,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_scrypt(password)
-        
+
         assert hasher.verify_scrypt(password, hash_str) is True
 
     def test_verify_scrypt_incorrect(self) -> None:
@@ -87,7 +87,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_scrypt(password)
-        
+
         assert hasher.verify_scrypt("wrong_password", hash_str) is False
 
     def test_argon2_different_hashes(self) -> None:
@@ -96,7 +96,7 @@ class TestSecureHasher:
         password = "test_password_123"
         hash1 = hasher.hash_argon2(password)
         hash2 = hasher.hash_argon2(password)
-        
+
         assert hash1 != hash2
 
     def test_bcrypt_different_hashes(self) -> None:
@@ -105,7 +105,7 @@ class TestSecureHasher:
         password = "test_password_123"
         hash1 = hasher.hash_bcrypt(password)
         hash2 = hasher.hash_bcrypt(password)
-        
+
         assert hash1 != hash2
 
     def test_scrypt_different_hashes(self) -> None:
@@ -114,7 +114,7 @@ class TestSecureHasher:
         password = "test_password_123"
         hash1 = hasher.hash_scrypt(password)
         hash2 = hasher.hash_scrypt(password)
-        
+
         assert hash1 != hash2
 
     def test_hash_argon2_custom_parameters(self) -> None:
@@ -122,7 +122,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_argon2(password, time_cost=2, memory_cost=32768, parallelism=2)
-        
+
         assert hash_str is not None
         assert hasher.verify_argon2(password, hash_str) is True
 
@@ -131,7 +131,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_bcrypt(password, rounds=10)
-        
+
         assert hash_str is not None
         assert hasher.verify_bcrypt(password, hash_str) is True
 
@@ -140,7 +140,7 @@ class TestSecureHasher:
         hasher = SecureHasher()
         password = "test_password_123"
         hash_str = hasher.hash_scrypt(password, n=2**12, r=4, p=1)
-        
+
         assert hash_str is not None
         assert hasher.verify_scrypt(password, hash_str) is True
 
@@ -213,11 +213,11 @@ class TestSecureHasher:
         """Test hashing unicode passwords."""
         hasher = SecureHasher()
         password = "pāssw0rd™"
-        
+
         hash_argon2 = hasher.hash_argon2(password)
         hash_bcrypt = hasher.hash_bcrypt(password)
         hash_scrypt = hasher.hash_scrypt(password)
-        
+
         assert hasher.verify_argon2(password, hash_argon2) is True
         assert hasher.verify_bcrypt(password, hash_bcrypt) is True
         assert hasher.verify_scrypt(password, hash_scrypt) is True
@@ -226,11 +226,11 @@ class TestSecureHasher:
         """Test hashing very long passwords."""
         hasher = SecureHasher()
         password = "a" * 1000
-        
+
         hash_argon2 = hasher.hash_argon2(password)
         hash_bcrypt = hasher.hash_bcrypt(password)
         hash_scrypt = hasher.hash_scrypt(password)
-        
+
         assert hasher.verify_argon2(password, hash_argon2) is True
         assert hasher.verify_bcrypt(password, hash_bcrypt) is True
         assert hasher.verify_scrypt(password, hash_scrypt) is True

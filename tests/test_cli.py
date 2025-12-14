@@ -153,11 +153,9 @@ class TestCLI:
         """Test vault initialization."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         result = runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
+            main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n"
         )
         assert result.exit_code == 0
         assert vault_path.exists()
@@ -166,19 +164,13 @@ class TestCLI:
         """Test adding entry to vault."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault
-        runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
-        )
-        
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
+
         # Add entry
         result = runner.invoke(
-            main,
-            ["vault", "add", str(vault_path), "testentry"],
-            input="masterpass\ntestpassword\n"
+            main, ["vault", "add", str(vault_path), "testentry"], input="masterpass\ntestpassword\n"
         )
         assert result.exit_code == 0
 
@@ -186,19 +178,13 @@ class TestCLI:
         """Test adding entry with generated password."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault
-        runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
-        )
-        
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
+
         # Add entry with generated password
         result = runner.invoke(
-            main,
-            ["vault", "add", str(vault_path), "testentry", "--generate"],
-            input="masterpass\n"
+            main, ["vault", "add", str(vault_path), "testentry", "--generate"], input="masterpass\n"
         )
         assert result.exit_code == 0
         assert "Generated password:" in result.output
@@ -207,25 +193,15 @@ class TestCLI:
         """Test listing vault entries."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault and add entry
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
         runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
+            main, ["vault", "add", str(vault_path), "entry1"], input="masterpass\npass1\n"
         )
-        runner.invoke(
-            main,
-            ["vault", "add", str(vault_path), "entry1"],
-            input="masterpass\npass1\n"
-        )
-        
+
         # List entries
-        result = runner.invoke(
-            main,
-            ["vault", "list", str(vault_path)],
-            input="masterpass\n"
-        )
+        result = runner.invoke(main, ["vault", "list", str(vault_path)], input="masterpass\n")
         assert result.exit_code == 0
         assert "entry1" in result.output
 
@@ -233,24 +209,16 @@ class TestCLI:
         """Test getting entry from vault."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault and add entry
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
         runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
+            main, ["vault", "add", str(vault_path), "entry1"], input="masterpass\npass123\n"
         )
-        runner.invoke(
-            main,
-            ["vault", "add", str(vault_path), "entry1"],
-            input="masterpass\npass123\n"
-        )
-        
+
         # Get entry
         result = runner.invoke(
-            main,
-            ["vault", "get", str(vault_path), "entry1"],
-            input="masterpass\n"
+            main, ["vault", "get", str(vault_path), "entry1"], input="masterpass\n"
         )
         assert result.exit_code == 0
         assert "entry1" in result.output
@@ -260,24 +228,16 @@ class TestCLI:
         """Test deleting entry from vault."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault and add entry
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
         runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
+            main, ["vault", "add", str(vault_path), "entry1"], input="masterpass\npass123\n"
         )
-        runner.invoke(
-            main,
-            ["vault", "add", str(vault_path), "entry1"],
-            input="masterpass\npass123\n"
-        )
-        
+
         # Delete entry
         result = runner.invoke(
-            main,
-            ["vault", "delete", str(vault_path), "entry1"],
-            input="masterpass\ny\n"
+            main, ["vault", "delete", str(vault_path), "entry1"], input="masterpass\ny\n"
         )
         assert result.exit_code == 0
 
@@ -285,54 +245,40 @@ class TestCLI:
         """Test initializing vault that already exists."""
         runner = CliRunner()
         vault_path = tmp_path / "test.vault"
-        
+
         # Create vault
-        runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
-        )
-        
+        runner.invoke(main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n")
+
         # Try to create again
         result = runner.invoke(
-            main,
-            ["vault", "init", str(vault_path)],
-            input="masterpass\nmasterpass\n"
+            main, ["vault", "init", str(vault_path)], input="masterpass\nmasterpass\n"
         )
         assert result.exit_code == 1
 
     def test_verify_command_argon2(self) -> None:
         """Test verify command with Argon2."""
         runner = CliRunner()
-        
+
         # First hash a password
         hash_result = runner.invoke(main, ["hash", "testpass"], input="testpass\n")
         hash_line = [line for line in hash_result.output.split("\n") if line.startswith("Hash:")][0]
         hash_str = hash_line.replace("Hash:", "").strip()
-        
+
         # Verify correct password
-        result = runner.invoke(
-            main,
-            ["verify"],
-            input=f"testpass\n{hash_str}\n"
-        )
+        result = runner.invoke(main, ["verify"], input=f"testpass\n{hash_str}\n")
         assert result.exit_code == 0
         assert "verified successfully" in result.output.lower()
 
     def test_verify_command_wrong_password(self) -> None:
         """Test verify command with wrong password."""
         runner = CliRunner()
-        
+
         # First hash a password
         hash_result = runner.invoke(main, ["hash", "testpass"], input="testpass\n")
         hash_line = [line for line in hash_result.output.split("\n") if line.startswith("Hash:")][0]
         hash_str = hash_line.replace("Hash:", "").strip()
-        
+
         # Verify wrong password
-        result = runner.invoke(
-            main,
-            ["verify"],
-            input=f"wrongpass\n{hash_str}\n"
-        )
+        result = runner.invoke(main, ["verify"], input=f"wrongpass\n{hash_str}\n")
         assert result.exit_code == 1
         assert "failed" in result.output.lower()

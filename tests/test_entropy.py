@@ -116,7 +116,7 @@ class TestEntropyCalculation:
 
     def test_estimate_crack_time_hours(self) -> None:
         """Test crack time in hours."""
-        # ~30 bits 
+        # ~30 bits
         time_str = estimate_crack_time(30)
         assert isinstance(time_str, str)
         assert len(time_str) > 0

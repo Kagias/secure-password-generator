@@ -62,21 +62,29 @@ class TestPasswordAuditor:
         auditor = PasswordAuditor()
         result = auditor.audit("abcdefghij")  # 10 chars
         # Should have length warning but less severe
-        length_issues = [issue for issue in result.issues if "short" in issue.lower() or "minimal" in issue.lower()]
+        length_issues = [
+            issue
+            for issue in result.issues
+            if "short" in issue.lower() or "minimal" in issue.lower()
+        ]
         # May or may not have length issue at 10 chars
 
     def test_keyboard_pattern_detection(self) -> None:
         """Test detection of keyboard patterns."""
         auditor = PasswordAuditor()
         result = auditor.audit("qwerty123")
-        assert any("keyboard" in issue.lower() or "pattern" in issue.lower() for issue in result.issues)
+        assert any(
+            "keyboard" in issue.lower() or "pattern" in issue.lower() for issue in result.issues
+        )
 
     def test_sequential_pattern_detection(self) -> None:
         """Test detection of sequential patterns."""
         auditor = PasswordAuditor()
         result = auditor.audit("abc123xyz")
         # Should detect sequential patterns
-        has_pattern_issue = any("sequential" in issue.lower() or "pattern" in issue.lower() for issue in result.issues)
+        has_pattern_issue = any(
+            "sequential" in issue.lower() or "pattern" in issue.lower() for issue in result.issues
+        )
         # May or may not detect depending on implementation
 
     def test_repeated_characters(self) -> None:
@@ -95,7 +103,10 @@ class TestPasswordAuditor:
         """Test password with single character class."""
         auditor = PasswordAuditor()
         result = auditor.audit("abcdefgh")
-        assert any("character class" in issue.lower() or "diversity" in issue.lower() for issue in result.issues)
+        assert any(
+            "character class" in issue.lower() or "diversity" in issue.lower()
+            for issue in result.issues
+        )
 
     def test_recommendations_generated(self) -> None:
         """Test that recommendations are generated."""
@@ -107,7 +118,9 @@ class TestPasswordAuditor:
         """Test recommendations for short password."""
         auditor = PasswordAuditor()
         result = auditor.audit("Ab1!")
-        assert any("length" in rec.lower() or "longer" in rec.lower() for rec in result.recommendations)
+        assert any(
+            "length" in rec.lower() or "longer" in rec.lower() for rec in result.recommendations
+        )
 
     def test_recommendations_for_no_uppercase(self) -> None:
         """Test recommendations when missing uppercase."""
@@ -119,7 +132,9 @@ class TestPasswordAuditor:
         """Test recommendations when missing digits."""
         auditor = PasswordAuditor()
         result = auditor.audit("Abcdefgh!@#")
-        assert any("number" in rec.lower() or "digit" in rec.lower() for rec in result.recommendations)
+        assert any(
+            "number" in rec.lower() or "digit" in rec.lower() for rec in result.recommendations
+        )
 
     def test_recommendations_for_no_symbols(self) -> None:
         """Test recommendations when missing symbols."""
@@ -161,7 +176,7 @@ class TestPasswordAuditor:
             character_classes={"lowercase": True},
             issues=["Test issue"],
             score=50,
-            recommendations=["Test rec"]
+            recommendations=["Test rec"],
         )
         assert result.entropy_bits == 50.0
         assert result.strength == "Fair"

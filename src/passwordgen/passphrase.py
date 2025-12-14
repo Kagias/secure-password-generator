@@ -14,7 +14,7 @@ from typing import Optional
 class PassphraseGenerator:
     """
     Generate cryptographically secure random passphrases using word lists.
-    
+
     Implements Diceware-style passphrase generation with the EFF large wordlist.
     Uses secrets module for CSPRNG-based word selection.
     """
@@ -31,14 +31,14 @@ class PassphraseGenerator:
     ):
         """
         Initialize the passphrase generator.
-        
+
         Args:
             word_count: Number of words in the passphrase (default: 6)
             separator: String to separate words (default: "-")
             capitalize: Capitalize the first letter of each word
             include_number: Append a random number (0-999) to the passphrase
             wordlist_path: Path to custom wordlist file (one word per line)
-            
+
         Raises:
             ValueError: If word_count < 1
             FileNotFoundError: If wordlist file not found
@@ -72,31 +72,31 @@ class PassphraseGenerator:
     def entropy_bits(self) -> float:
         """
         Calculate the entropy of passphrases generated with this configuration.
-        
+
         For Diceware-style passphrases:
         - Base entropy: word_count * log2(wordlist_size)
         - Additional entropy from number: log2(1000) ≈ 9.97 bits
-        
+
         Capitalization doesn't add entropy when applied uniformly.
-        
+
         Returns:
             Entropy in bits
         """
         base_entropy = self.word_count * math.log2(len(self._wordlist))
-        
+
         # Add entropy from random number if included
         if self.include_number:
             base_entropy += math.log2(1000)  # Numbers 0-999
-            
+
         return base_entropy
 
     def generate(self) -> str:
         """
         Generate a single secure random passphrase.
-        
+
         Uses secrets.choice() for cryptographically secure random word selection.
         The secrets module uses os.urandom() for security.
-        
+
         Returns:
             A cryptographically secure random passphrase
         """
@@ -121,13 +121,13 @@ class PassphraseGenerator:
     def generate_multiple(self, count: int) -> list[str]:
         """
         Generate multiple secure random passphrases.
-        
+
         Args:
             count: Number of passphrases to generate
-            
+
         Returns:
             List of cryptographically secure random passphrases
-            
+
         Raises:
             ValueError: If count < 1
         """

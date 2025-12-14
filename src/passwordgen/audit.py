@@ -21,7 +21,7 @@ from passwordgen.entropy import calculate_password_entropy, entropy_to_strength
 class AuditResult:
     """
     Result of password security audit.
-    
+
     Attributes:
         entropy_bits: Calculated entropy in bits
         strength: Strength rating ("Very Weak" to "Very Strong")
@@ -42,7 +42,7 @@ class AuditResult:
 class PasswordAuditor:
     """
     Comprehensive password security auditor.
-    
+
     Analyzes passwords for:
     - Entropy and strength
     - Character class diversity
@@ -97,10 +97,10 @@ class PasswordAuditor:
     def audit(self, password: str) -> AuditResult:
         """
         Perform comprehensive security audit on a password.
-        
+
         Args:
             password: The password to audit
-            
+
         Returns:
             AuditResult with detailed analysis
         """
@@ -226,7 +226,7 @@ class PasswordAuditor:
     ) -> int:
         """
         Calculate overall security score (0-100).
-        
+
         Scoring factors:
         - Base score from entropy (50%)
         - Character class diversity (25%)

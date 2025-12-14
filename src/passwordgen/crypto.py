@@ -21,12 +21,12 @@ import bcrypt
 class SecureHasher:
     """
     Secure password hashing using memory-hard KDFs.
-    
+
     Supported algorithms:
     - Argon2id: Recommended default, winner of PHC
     - bcrypt: Industry standard
     - scrypt: Memory-hard alternative
-    
+
     All methods include proper salting and use constant-time comparison
     for verification to prevent timing attacks.
     """
@@ -37,24 +37,24 @@ class SecureHasher:
     ) -> str:
         """
         Hash password using Argon2id algorithm.
-        
+
         Argon2id is the winner of the Password Hashing Competition and provides
         the best resistance against both side-channel and GPU attacks.
-        
+
         Parameters chosen for security:
         - time_cost: Number of iterations (default: 3)
         - memory_cost: Memory in KiB (default: 64 MiB)
         - parallelism: Number of parallel threads (default: 4)
-        
+
         Args:
             password: Password to hash
             time_cost: Number of iterations
             memory_cost: Memory usage in KiB
             parallelism: Degree of parallelism
-            
+
         Returns:
             Encoded hash string (includes algorithm, parameters, salt, and hash)
-            
+
         Raises:
             ValueError: If parameters are invalid
         """
@@ -78,25 +78,25 @@ class SecureHasher:
     def hash_bcrypt(password: str, rounds: int = 12) -> str:
         """
         Hash password using bcrypt algorithm.
-        
+
         bcrypt is an industry-standard password hashing function based on the
         Blowfish cipher. It's been extensively tested and is still considered
         secure when used with appropriate cost factors.
-        
+
         The cost factor is exponential: 2^rounds iterations.
         - rounds=12: ~250ms on modern CPU
         - rounds=14: ~1s on modern CPU
-        
+
         Note: bcrypt has a maximum password length of 72 bytes.
         Longer passwords are automatically truncated.
-        
+
         Args:
             password: Password to hash
             rounds: Cost factor (4-31, default: 12)
-            
+
         Returns:
             bcrypt hash string (includes algorithm, cost, salt, and hash)
-            
+
         Raises:
             ValueError: If parameters are invalid
         """
@@ -118,27 +118,27 @@ class SecureHasher:
     def hash_scrypt(password: str, n: int = 2**14, r: int = 8, p: int = 1) -> str:
         """
         Hash password using scrypt algorithm.
-        
+
         scrypt is a memory-hard KDF designed to make hardware brute-force attacks
         expensive by requiring large amounts of memory.
-        
+
         Parameters:
         - n: CPU/memory cost factor (must be power of 2)
         - r: Block size (affects memory usage)
         - p: Parallelization factor
-        
+
         Memory usage: 128 * N * r bytes
         Default: 128 * 16384 * 8 = 16 MiB
-        
+
         Args:
             password: Password to hash
             n: CPU/memory cost factor
             r: Block size parameter
             p: Parallelization parameter
-            
+
         Returns:
             Base64-encoded string: "salt$hash"
-            
+
         Raises:
             ValueError: If parameters are invalid
         """
@@ -157,9 +157,7 @@ class SecureHasher:
         salt = secrets.token_bytes(32)
 
         # Hash with scrypt
-        hashed = hashlib.scrypt(
-            password.encode("utf-8"), salt=salt, n=n, r=r, p=p, dklen=32
-        )
+        hashed = hashlib.scrypt(password.encode("utf-8"), salt=salt, n=n, r=r, p=p, dklen=32)
 
         # Encode as: n$r$p$salt$hash
         result = f"{n}${r}${p}${b64encode(salt).decode()}${b64encode(hashed).decode()}"
@@ -169,13 +167,13 @@ class SecureHasher:
     def verify_argon2(password: str, hash_str: str) -> bool:
         """
         Verify password against Argon2 hash.
-        
+
         Uses constant-time comparison to prevent timing attacks.
-        
+
         Args:
             password: Password to verify
             hash_str: Argon2 hash string from hash_argon2()
-            
+
         Returns:
             True if password matches, False otherwise
         """
@@ -196,13 +194,13 @@ class SecureHasher:
     def verify_bcrypt(password: str, hash_str: str) -> bool:
         """
         Verify password against bcrypt hash.
-        
+
         Uses constant-time comparison internally to prevent timing attacks.
-        
+
         Args:
             password: Password to verify
             hash_str: bcrypt hash string from hash_bcrypt()
-            
+
         Returns:
             True if password matches, False otherwise
         """
@@ -222,14 +220,14 @@ class SecureHasher:
     def verify_scrypt(password: str, hash_str: str) -> bool:
         """
         Verify password against scrypt hash.
-        
+
         Uses constant-time comparison via hmac.compare_digest to prevent
         timing attacks.
-        
+
         Args:
             password: Password to verify
             hash_str: scrypt hash string from hash_scrypt()
-            
+
         Returns:
             True if password matches, False otherwise
         """

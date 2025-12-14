@@ -34,7 +34,7 @@ logger = SecureLogger.get_logger("passwordgen.cli")
 def main() -> None:
     """
     Secure Password and Passphrase Generator
-    
+
     A cybersecurity-focused tool for generating secure passwords,
     analyzing password strength, and managing encrypted vaults.
     """
@@ -47,7 +47,9 @@ def main() -> None:
 @click.option("--no-lowercase", is_flag=True, help="Exclude lowercase letters")
 @click.option("--no-digits", is_flag=True, help="Exclude digits")
 @click.option("--no-symbols", is_flag=True, help="Exclude symbols")
-@click.option("--exclude-ambiguous", is_flag=True, help="Exclude ambiguous characters (0, O, 1, l, I)")
+@click.option(
+    "--exclude-ambiguous", is_flag=True, help="Exclude ambiguous characters (0, O, 1, l, I)"
+)
 @click.option("--count", "-c", default=1, help="Number of passwords to generate")
 @click.option("--show-entropy", is_flag=True, help="Show entropy information")
 def generate(
@@ -241,7 +243,9 @@ def verify(password: str, hash_str: str, algorithm: str) -> None:
             elif "$" in hash_str and len(hash_str.split("$")) == 5:
                 algorithm = "scrypt"
             else:
-                click.echo("Could not auto-detect algorithm. Please specify with --algorithm", err=True)
+                click.echo(
+                    "Could not auto-detect algorithm. Please specify with --algorithm", err=True
+                )
                 sys.exit(1)
 
         # Verify

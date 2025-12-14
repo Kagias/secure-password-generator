@@ -15,7 +15,7 @@ from typing import Optional
 class PasswordGenerator:
     """
     Generate cryptographically secure random passwords.
-    
+
     Uses the secrets module for CSPRNG-based random selection, ensuring
     passwords are suitable for security purposes.
     """
@@ -35,7 +35,7 @@ class PasswordGenerator:
     ):
         """
         Initialize the password generator with specified character classes.
-        
+
         Args:
             length: Password length (default: 16)
             uppercase: Include uppercase letters A-Z
@@ -44,7 +44,7 @@ class PasswordGenerator:
             symbols: Include symbols
             exclude_ambiguous: Exclude ambiguous characters (0, O, 1, l, I)
             custom_symbols: Custom symbol set (overrides default symbols)
-            
+
         Raises:
             ValueError: If length < 1 or no character classes selected
         """
@@ -96,9 +96,9 @@ class PasswordGenerator:
     def entropy_bits(self) -> float:
         """
         Calculate the entropy of passwords generated with this configuration.
-        
+
         Entropy formula: log2(charset_size^length) = length * log2(charset_size)
-        
+
         Returns:
             Entropy in bits
         """
@@ -109,11 +109,11 @@ class PasswordGenerator:
     def generate(self) -> str:
         """
         Generate a single secure random password.
-        
+
         Uses secrets.choice() which provides cryptographically strong random
         selection from the character set. This is secure because secrets uses
         os.urandom() as its randomness source.
-        
+
         Returns:
             A cryptographically secure random password
         """
@@ -124,13 +124,13 @@ class PasswordGenerator:
     def generate_multiple(self, count: int) -> list[str]:
         """
         Generate multiple secure random passwords.
-        
+
         Args:
             count: Number of passwords to generate
-            
+
         Returns:
             List of cryptographically secure random passwords
-            
+
         Raises:
             ValueError: If count < 1
         """
