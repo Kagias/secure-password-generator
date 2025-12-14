@@ -621,9 +621,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-For security issues, please email: security@example.com
-
-For general inquiries: kagias@example.com
+Author: Kagias
 
 ---
 
