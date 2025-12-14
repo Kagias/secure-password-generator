@@ -185,7 +185,7 @@ class SecureVault:
         if name not in self.vault_data["entries"]:
             raise KeyError(f"Entry '{name}' not found")
 
-        return self.vault_data["entries"][name].copy()
+        return dict(self.vault_data["entries"][name])
 
     def list_entries(self) -> list[str]:
         """
